@@ -9,7 +9,8 @@
 - Maven
 - H2 In-Memory Database
 - Mockito (for unit testing)
-  ## Getting Started
+
+## Getting Started
 
 
 ### Preqresites
