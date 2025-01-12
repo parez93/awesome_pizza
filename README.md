@@ -1,7 +1,8 @@
 # Awesome Pizza API
 
-[<img src="awesome-pizza.png">]([https://unsplash.com/it/foto/pizza-ai-frutti-di-bosco-MQUqbmszGGM](https://images.unsplash.com/photo-1513104890138-7c749659a591?q=80&w=1470&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D))
-
+<p align="center">
+<img alt="Awesome Pizza" height="245px" src="https://images.unsplash.com/photo-1513104890138-7c749659a591?q=80&w=1470&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D" />
+</p>
 
 ## Project Description
 "Awesome Pizza" is a Spring Boot API that enables customers to place orders for pizzas without registration. The pizzaiolo (pizza maker) can view the pizza Order queue nd process them one at a time.
