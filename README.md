@@ -108,6 +108,12 @@ spring.jpa.database-platform=org.hibernate.dialect.H2Dialect
 ### GitHub Actions
 This project uses GitHub Actions for CI/CD. The GitHub Actions workflow is defined in the `.github/workflows` directory
 
+### Swagger
+A swagger is provided for the Order feature. (see the folder)
+
+### Postman
+A postman is provided for the Order feature. (see the folder)
+
 ### License
 This project is licensed under the MIT License. See the LICENSE file for details.
 
