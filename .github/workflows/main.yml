@@ -49,7 +49,7 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
           upload_url: ${{ steps.create_release.outputs.upload_url }}
-          asset_path: target/awesome_pizza_*.war
+          asset_path: target/awesome_pizza_*.war.original
           asset_name: awesome_pizza_${{ github.run_number }}.war
           asset_content_type: application/zip
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
