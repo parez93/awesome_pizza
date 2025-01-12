@@ -34,7 +34,7 @@ jobs:
       # Step 5: Create a GitHub Release and upload the WAR file
       - name: Create GitHub Release
         id: create_release
-        uses: gh-actions/create-release@v1
+        uses: actions/create-release@v1
         with:
           tag_name: 'v${{ github.run_number }}'  # Use a version tag based on the run number
           release_name: 'Release ${{ github.run_number }}'  # Release name with run number
@@ -43,7 +43,7 @@ jobs:
 
       # Step 6: Upload the WAR file as part of the release
       - name: Upload WAR to Release
-        uses: gh-actions/upload-release-asset@v1
+        uses: actions/upload-release-asset@v1
         with:
           upload_url: ${{ steps.create_release.outputs.upload_url }}
           asset_path: target/*.war  # Path to the WAR file
