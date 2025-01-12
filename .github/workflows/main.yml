@@ -12,6 +12,8 @@ on:
 jobs:
   build:
     runs-on: ubuntu-latest  # Define the operating system for the workflow (you can choose another one if needed)
+    permissions:  # Add permissions section
+      contents: write  # Ensure the token has write permissions to the contents
 
     steps:
       # Step 1: Checkout the code
