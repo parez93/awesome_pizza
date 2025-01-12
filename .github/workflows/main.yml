@@ -42,6 +42,7 @@ jobs:
           release_name: 'Release ${{ github.run_number }}'  # Release name with run number
           draft: false  # Mark as a full release (not draft)
           prerelease: false  # Mark as a full release (not a prerelease)
+          token: ${{ secrets.GITHUB_TOKEN }}  # Provide the GitHub token
 
       # Step 6: Upload the WAR file as part of the release
       - name: Upload WAR to Release
@@ -51,3 +52,4 @@ jobs:
           asset_path: target/*.war  # Path to the WAR file
           asset_name: my-app.war  # Name the WAR file
           asset_content_type: application/zip  # Set the MIME type for the WAR file
+          token: ${{ secrets.GITHUB_TOKEN }}  # Provide the GitHub token
