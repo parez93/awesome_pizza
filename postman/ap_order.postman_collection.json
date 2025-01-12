@@ -1,0 +1,371 @@
+{
+	"info": {
+		"_postman_id": "c11dcd7b-78ad-4899-bf1d-3f7ebbd11db7",
+		"name": "Awesome Pizza API",
+		"description": "Postman collection for Awesome Pizza API endpoints",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "18927482"
+	},
+	"item": [
+		{
+			"name": "Create a New Order",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n  \"customerName\": \"Federico\",\n  \"pizzaType\": \"Margherita\"\n}"
+				},
+				"url": {
+					"raw": "http://localhost:8080/orders",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"orders"
+					]
+				},
+				"description": "### Create New Order\n\nThis endpoint allows the client to place a new order for pizza.\n\n#### Request Body\n\n- `customerName` (string): The name of the customer placing the order.\n    \n- `pizzaType` (string): The type of pizza being ordered.\n    \n\n#### Response\n\nThe response schema for this request is as follows:\n\n``` json\n{\n  \"type\": \"object\",\n  \"properties\": {\n    \"orderId\": {\n      \"type\": \"string\"\n    },\n    \"customerName\": {\n      \"type\": \"string\"\n    },\n    \"pizzaType\": {\n      \"type\": \"string\"\n    },\n    \"status\": {\n      \"type\": \"string\"\n    }\n  }\n}\n\n ```"
+			},
+			"response": [
+				{
+					"name": "Create a New Order",
+					"originalRequest": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"name": "Content-Type",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"customerName\": \"Federico\",\n  \"pizzaType\": \"Margherita\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:8080/orders",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"orders"
+							]
+						}
+					},
+					"_postman_previewlanguage": "json",
+					"header": null,
+					"cookie": [],
+					"body": "{\n    \"id\": \"b34268a1-61ea-4a8b-905f-100c86a4b97e\",\n    \"customerName\": \"Federico\",\n    \"pizzaType\": \"Margherita\",\n    \"status\": \"PENDING\",\n    \"createdAt\": \"2025-01-10T22:45:35.342399\",\n    \"updatedAt\": \"2025-01-10T22:45:35.34242\"\n}"
+				}
+			]
+		},
+		{
+			"name": "Update Order Status",
+			"request": {
+				"method": "PUT",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n  \"status\": \"IN_PROGRESS\"\n}"
+				},
+				"url": {
+					"raw": "http://localhost:8080/orders/:id/status",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"orders",
+						":id",
+						"status"
+					],
+					"variable": [
+						{
+							"key": "id",
+							"value": "b34268a1-61ea-4a8b-905f-100c86a4b97e"
+						}
+					]
+				},
+				"description": "### Update Order Status\n\nThis endpoint is used to update the status of a specific order.\n\n#### Request\n\n- Method: PUT\n    \n- URL: `http://localhost:8080/orders/:id/status`\n    \n- Body:\n    \n    - `status`: (string) The new status of the order. Possible values include \"IN_PROGRESS\", \"COMPLETED\", \"CANCELLED\", etc.\n        \n\n#### Response\n\nThe response schema for this request is as follows:\n\n``` json\n{\n  \"type\": \"object\",\n  \"properties\": {\n    \"message\": {\n      \"type\": \"string\"\n    },\n    \"updatedOrder\": {\n      \"type\": \"object\",\n      \"properties\": {\n        \"orderId\": {\n          \"type\": \"string\"\n        },\n        \"status\": {\n          \"type\": \"string\"\n        }\n      }\n    }\n  }\n}\n\n ```"
+			},
+			"response": [
+				{
+					"name": "Update Order Status Example",
+					"originalRequest": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"name": "Content-Type",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"status\": \"IN_PROGRESS\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:8080/orders/:id/status",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"orders",
+								":id",
+								"status"
+							],
+							"variable": [
+								{
+									"key": "id",
+									"value": "1"
+								}
+							]
+						}
+					},
+					"_postman_previewlanguage": "json",
+					"header": null,
+					"cookie": [],
+					"body": "{\n    \"id\": \"b34268a1-61ea-4a8b-905f-100c86a4b97e\",\n    \"customerName\": \"Federico\",\n    \"pizzaType\": \"Margherita\",\n    \"status\": \"IN_PROGRESS\",\n    \"createdAt\": \"2025-01-10T22:45:35.342399\",\n    \"updatedAt\": \"2025-01-10T22:45:55.551582\"\n}"
+				}
+			]
+		},
+		{
+			"name": "Update Order",
+			"request": {
+				"method": "PUT",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"id\": \"b34268a1-61ea-4a8b-905f-100c86a4b97e\",\n    \"customerName\": \"Federico\",\n    \"pizzaType\": \"Margherita\",\n    \"status\": \"PENDING\",\n    \"createdAt\": \"2025-01-10T22:38:52.737565\",\n    \"updatedAt\": \"2025-01-10T22:38:52.737587\"\n}"
+				},
+				"url": {
+					"raw": "http://localhost:8080/orders/update",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"orders",
+						"update"
+					]
+				}
+			},
+			"response": [
+				{
+					"name": "Update Order",
+					"originalRequest": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"name": "Content-Type",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"id\": \"b34268a1-61ea-4a8b-905f-100c86a4b97e\",\n    \"customerName\": \"Federico\",\n    \"pizzaType\": \"Margherita\",\n    \"status\": \"PENDING\",\n    \"createdAt\": \"2025-01-10T22:38:52.737565\",\n    \"updatedAt\": \"2025-01-10T22:38:52.737587\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:8080/orders/update",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"orders",
+								"update"
+							]
+						}
+					},
+					"_postman_previewlanguage": "json",
+					"header": null,
+					"cookie": [],
+					"body": "{\n    \"id\": \"b34268a1-61ea-4a8b-905f-100c86a4b97e\",\n    \"customerName\": \"Federico\",\n    \"pizzaType\": \"Margherita\",\n    \"status\": \"IN_PROGRESS\",\n    \"createdAt\": \"2025-01-10T22:45:35.342399\",\n    \"updatedAt\": \"2025-01-10T22:45:55.551582\"\n}"
+				}
+			]
+		},
+		{
+			"name": "Delete Order Status",
+			"request": {
+				"method": "DELETE",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": ""
+				},
+				"url": {
+					"raw": "http://localhost:8080/orders/:id/delete",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"orders",
+						":id",
+						"delete"
+					],
+					"variable": [
+						{
+							"key": "id",
+							"value": "9d394ba0-acfe-4f2f-8fb2-dda49d7da060"
+						}
+					]
+				}
+			},
+			"response": [
+				{
+					"name": "Delete Order Status",
+					"originalRequest": {
+						"method": "DELETE",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": ""
+						},
+						"url": {
+							"raw": "http://localhost:8080/orders/:id/delete",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"orders",
+								":id",
+								"delete"
+							],
+							"variable": [
+								{
+									"key": "id",
+									"value": "9d394ba0-acfe-4f2f-8fb2-dda49d7da060"
+								}
+							]
+						}
+					},
+					"_postman_previewlanguage": null,
+					"header": null,
+					"cookie": [],
+					"body": "true"
+				}
+			]
+		},
+		{
+			"name": "Get All Orders",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:8080/orders?orderAsc=false",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"orders"
+					],
+					"query": [
+						{
+							"key": "customerName",
+							"value": "Federico",
+							"disabled": true
+						},
+						{
+							"key": "orderAsc",
+							"value": "false"
+						}
+					]
+				}
+			},
+			"response": [
+				{
+					"name": "Get All Orders",
+					"originalRequest": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:8080/orders?customerName=Federico&orderAsc=false",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"orders"
+							],
+							"query": [
+								{
+									"key": "customerName",
+									"value": "Federico"
+								},
+								{
+									"key": "orderAsc",
+									"value": "false"
+								}
+							]
+						}
+					},
+					"_postman_previewlanguage": null,
+					"header": null,
+					"cookie": [],
+					"body": "[\n    {\n        \"id\": \"0567c888-1a8d-44e3-86e4-3f2f9f58be27\",\n        \"customerName\": \"Federico\",\n        \"pizzaType\": \"Margherita\",\n        \"status\": \"PENDING\",\n        \"createdAt\": \"2025-01-10T23:44:09.227735\",\n        \"updatedAt\": \"2025-01-10T23:44:09.227745\"\n    },\n    {\n        \"id\": \"da79e6e7-499b-4450-9251-3a37a51a5c5a\",\n        \"customerName\": \"Federico\",\n        \"pizzaType\": \"Margherita\",\n        \"status\": \"PENDING\",\n        \"createdAt\": \"2025-01-10T23:44:08.541106\",\n        \"updatedAt\": \"2025-01-10T23:44:08.541119\"\n    },\n    {\n        \"id\": \"7de448e5-b06f-48d8-99df-629e8cb2dadf\",\n        \"customerName\": \"Federico\",\n        \"pizzaType\": \"Margherita\",\n        \"status\": \"PENDING\",\n        \"createdAt\": \"2025-01-10T23:44:07.899315\",\n        \"updatedAt\": \"2025-01-10T23:44:07.899335\"\n    }\n]"
+				}
+			]
+		}
+	]
+}

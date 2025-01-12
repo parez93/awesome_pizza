@@ -1,0 +1,208 @@
+openapi: 3.0.3
+info:
+  title: Awesome Pizza API
+  description: API for managing pizza orders
+  version: 1.0.0
+  
+servers:
+  - url: http://localhost:8080
+    description: Development server
+
+tags:
+  - name: orders
+    description: Operations about pizza orders
+
+paths:
+  /orders:
+    post:
+      tags:
+        - orders
+      summary: Create a new pizza order
+      operationId: createOrder
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/SaveOrderRequest'
+      responses:
+        '201':
+          description: Order created successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SaveOrderResponse'
+        '400':
+          description: Invalid request - Missing required fields
+        '500':
+          description: Internal server error
+    
+    get:
+      tags:
+        - orders
+      summary: Get all pizza orders
+      operationId: getAllOrders
+      parameters:
+        - name: customerName
+          in: query
+          required: false
+          schema:
+            type: string
+          description: Filter orders by customer name
+        - name: orderAsc
+          in: query
+          required: false
+          schema:
+            type: boolean
+            default: false
+          description: Sort orders by update time (true for ascending, false for descending)
+      responses:
+        '200':
+          description: List of orders retrieved successfully
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/FullOrderResponse'
+        '500':
+          description: Internal server error
+
+  /orders/{id}/status:
+    put:
+      tags:
+        - orders
+      summary: Update order status to next state
+      operationId: updateOrderStatus
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+          description: Order ID
+      responses:
+        '200':
+          description: Order status updated successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UpdateOrderResponse'
+        '500':
+          description: Internal server error
+
+  /orders/update:
+    put:
+      tags:
+        - orders
+      summary: Update an existing order
+      operationId: updateOrder
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UpdateOrderRequest'
+      responses:
+        '200':
+          description: Order updated successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UpdateOrderResponse'
+        '500':
+          description: Internal server error
+
+  /orders/{id}/delete:
+    delete:
+      tags:
+        - orders
+      summary: Delete an order
+      operationId: deleteOrder
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+          description: Order ID
+      responses:
+        '200':
+          description: Order deleted successfully
+          content:
+            application/json:
+              schema:
+                type: boolean
+        '500':
+          description: Internal server error
+
+components:
+  schemas:
+    SaveOrderRequest:
+      type: object
+      required:
+        - customerName
+        - pizzaType
+      properties:
+        customerName:
+          type: string
+          description: Name of the customer
+        pizzaType:
+          type: string
+          description: Type of pizza ordered
+
+    SaveOrderResponse:
+      allOf:
+        - $ref: '#/components/schemas/OrderResponse'
+      
+    UpdateOrderRequest:
+      type: object
+      required:
+        - id
+      properties:
+        id:
+          type: string
+          format: uuid
+        customerName:
+          type: string
+        pizzaType:
+          type: string
+        status:
+          type: string
+          enum: [PENDING, IN_PROGRESS, COMPLETED]
+        createdAt:
+          type: string
+          format: date-time
+        updatedAt:
+          type: string
+          format: date-time
+
+    UpdateOrderResponse:
+      allOf:
+        - $ref: '#/components/schemas/OrderResponse'
+
+    FullOrderResponse:
+      allOf:
+        - $ref: '#/components/schemas/OrderResponse'
+
+    OrderResponse:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+        customerName:
+          type: string
+        pizzaType:
+          type: string
+        status:
+          type: string
+          enum: [PENDING, IN_PROGRESS, COMPLETED]
+        createdAt:
+          type: string
+          format: date-time
+        updatedAt:
+          type: string
+          format: date-time
