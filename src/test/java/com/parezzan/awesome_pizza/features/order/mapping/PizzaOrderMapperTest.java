@@ -20,7 +20,7 @@ class PizzaOrderMapperTest {
     void testPizzaOrderToFullOrderResponse() {
         PizzaOrder pizzaOrder = new PizzaOrder();
         pizzaOrder.setId(UUID.randomUUID());
-        pizzaOrder.setCustomerName("John Doe");
+        pizzaOrder.setCustomerName("Federico Parezzan");
         pizzaOrder.setPizzaType("Margherita");
         pizzaOrder.setStatus(PizzaOrderStatusEnum.PENDING.getValue());
         pizzaOrder.setCreatedAt(LocalDateTime.now());
