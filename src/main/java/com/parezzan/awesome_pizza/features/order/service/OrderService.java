@@ -1,34 +1,80 @@
-package com.parezzan.awesome_pizza.service;
+package com.parezzan.awesome_pizza.features.order.service;
 
-import com.parezzan.awesome_pizza.entity.Order;
-import com.parezzan.awesome_pizza.repository.OrderRepository;
+import com.parezzan.awesome_pizza.features.order.dto.request.SaveOrderRequest;
+import com.parezzan.awesome_pizza.features.order.dto.request.UpdateOrderRequest;
+import com.parezzan.awesome_pizza.features.order.dto.response.FullOrderResponse;
+import com.parezzan.awesome_pizza.features.order.dto.response.SaveOrderResponse;
+import com.parezzan.awesome_pizza.features.order.dto.response.UpdateOrderResponse;
+import com.parezzan.awesome_pizza.features.order.entity.PizzaOrder;
+import com.parezzan.awesome_pizza.features.order.entity.PizzaOrderStatusEnum;
+import com.parezzan.awesome_pizza.features.order.mapping.PizzaOrderMapper;
+import com.parezzan.awesome_pizza.features.order.repository.OrderRepository;
+import org.springframework.beans.BeanUtils;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Optional;
+import java.util.UUID;
+
+import com.parezzan.awesome_pizza.aspects.log.Loggable;
+
 
 @Service
-public class OrderService {
+public class OrderService implements IOrderService{
     private final OrderRepository orderRepository;
 
     public OrderService(OrderRepository orderRepository) {
         this.orderRepository = orderRepository;
     }
 
-    public Order createOrder(String customerName, String pizzaType) {
-        Order order = new Order();
-        order.setCustomerName(customerName);
-        order.setPizzaType(pizzaType);
-        order.setStatus("PENDING");
-        return orderRepository.save(order);
+    @Loggable
+    @Override
+    public SaveOrderResponse createOrder(SaveOrderRequest request) {
+        PizzaOrder pizzaOrder = PizzaOrderMapper.saveOrderRequestToPizzaOrder(request);
+        PizzaOrder pizzaOrderSaved = orderRepository.save(pizzaOrder);
+        return PizzaOrderMapper.pizzaOrderToSaveOrderResponse(pizzaOrderSaved);
     }
 
-    public Order updateOrderStatus(Long orderId, String status) {
-        Order order = orderRepository.findById(orderId).orElseThrow(() -> new IllegalArgumentException("Order not found"));
-        order.setStatus(status);
-        return orderRepository.save(order);
+    @Loggable
+    @Override
+    public UpdateOrderResponse updateOrderStatus(String orderId) {
+        PizzaOrder pizzaOrder = orderRepository.findById(UUID.fromString(orderId)).orElseThrow(() -> new IllegalArgumentException("Order not found"));
+
+        pizzaOrder.setStatus(PizzaOrderStatusEnum.next(pizzaOrder.getStatus()).getValue());
+        PizzaOrder pizzaOrderUpdated =  orderRepository.save(pizzaOrder);
+        return PizzaOrderMapper.pizzaOrderToUpdateOrderResponse(pizzaOrderUpdated);
     }
 
-    public List<Order> getAllOrders() {
-        return orderRepository.findAll();
+    @Loggable
+    @Override
+    public UpdateOrderResponse updateOrder(UpdateOrderRequest request) {
+        PizzaOrder pizzaOrder = orderRepository.findById(request.getId()).orElseThrow(() -> new IllegalArgumentException("Order not found"));
+        BeanUtils.copyProperties(request, pizzaOrder);
+        PizzaOrder pizzaOrderUpdated =  orderRepository.save(pizzaOrder);
+        return PizzaOrderMapper.pizzaOrderToUpdateOrderResponse(pizzaOrderUpdated);
     }
+
+    @Loggable
+    @Override
+    public Boolean deleteOrder(String orderId) {
+        PizzaOrder pizzaOrder = orderRepository.findById(UUID.fromString(orderId)).orElseThrow(() -> new IllegalArgumentException("Order not found"));
+        orderRepository.delete(pizzaOrder);
+        return Boolean.TRUE;
+    }
+
+
+    @Loggable
+    @Override
+    public List<FullOrderResponse> getAllOrders(Optional<String> customerName, boolean orderAsc) {
+        List<PizzaOrder> pizzaOrders;
+        Sort sorting = Sort.by(orderAsc ? Sort.Direction.ASC : Sort.Direction.DESC, "updatedAt");
+        if(customerName.isEmpty() || customerName.get().isEmpty()) {
+            pizzaOrders = orderRepository.findAll(sorting);
+        } else {
+            pizzaOrders = orderRepository.findAllByCustomerName(customerName.get(), sorting);
+        }
+        return PizzaOrderMapper.pizzaOrderToFullOrderResponse(pizzaOrders);
+    }
+
 }

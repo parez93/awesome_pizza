@@ -1,15 +1,18 @@
 package com.parezzan.awesome_pizza.features.order.dto.response;
 
-import lombok.Getter;
-import lombok.Setter;
+import lombok.*;
 
 import java.time.LocalDateTime;
+import java.util.UUID;
 
 @Getter
 @Setter
-public abstract class AbstractOrderResponse {
+@EqualsAndHashCode
+@AllArgsConstructor
+@NoArgsConstructor
+public class OrderResponse {
 
-    private Long id;
+    private UUID id;
     private String customerName;
     private String pizzaType;
     private String status; // PENDING, IN_PROGRESS, COMPLETED

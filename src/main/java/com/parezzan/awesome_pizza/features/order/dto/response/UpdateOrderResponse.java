@@ -1,19 +1,18 @@
 package com.parezzan.awesome_pizza.features.order.dto.response;
 
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import java.time.LocalDateTime;
+import java.util.UUID;
 
 @Getter
 @Setter
-public class SaveOrderResponse {
+@NoArgsConstructor
+public class UpdateOrderResponse extends OrderResponse {
 
-    private Long id;
-    private String customerName;
-    private String pizzaType;
-    private String status; // PENDING, IN_PROGRESS, COMPLETED
-    private LocalDateTime createdAt;
-    private LocalDateTime updatedAt;
-
+    public UpdateOrderResponse(UUID id, String customerName, String pizzaType, String status, LocalDateTime createdAt, LocalDateTime updatedAt) {
+        super(id, customerName, pizzaType, status, createdAt, updatedAt);
+    }
 }

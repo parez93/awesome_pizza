@@ -7,7 +7,6 @@ import com.parezzan.awesome_pizza.features.order.dto.response.SaveOrderResponse;
 import com.parezzan.awesome_pizza.features.order.dto.response.UpdateOrderResponse;
 import com.parezzan.awesome_pizza.features.order.entity.PizzaOrder;
 import com.parezzan.awesome_pizza.features.order.entity.PizzaOrderStatusEnum;
-import com.parezzan.awesome_pizza.features.order.mapping.PizzaOrderMapper;
 import com.parezzan.awesome_pizza.features.order.repository.OrderRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -16,6 +15,8 @@ import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import org.springframework.data.domain.Sort;
 
+import java.time.LocalDateTime;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
@@ -40,10 +41,10 @@ class OrderServiceTest {
 
     @Test
     void createOrder_shouldSaveAndReturnResponse() {
-        SaveOrderRequest request = new SaveOrderRequest("John Doe", "Margherita");
+        SaveOrderRequest request = new SaveOrderRequest("Federico Parezzan", "Margherita");
         PizzaOrder pizzaOrder = new PizzaOrder();
         pizzaOrder.setId(UUID.randomUUID());
-        pizzaOrder.setCustomerName("John Doe");
+        pizzaOrder.setCustomerName("Federico Parezzan");
         pizzaOrder.setPizzaType("Margherita");
 
         when(orderRepository.save(any(PizzaOrder.class))).thenReturn(pizzaOrder);
@@ -51,7 +52,7 @@ class OrderServiceTest {
         SaveOrderResponse response = orderService.createOrder(request);
 
         assertThat(response).isNotNull();
-        assertThat(response.getCustomerName()).isEqualTo("John Doe");
+        assertThat(response.getCustomerName()).isEqualTo("Federico Parezzan");
         verify(orderRepository, times(1)).save(any(PizzaOrder.class));
     }
 
@@ -88,7 +89,7 @@ class OrderServiceTest {
 
     @Test
     void updateOrder_shouldUpdateAndReturnResponse() {
-        UpdateOrderRequest request = new UpdateOrderRequest(UUID.randomUUID(), "John Doe", "Pepperoni", "IN_PROGRESS", null, null);
+        UpdateOrderRequest request = new UpdateOrderRequest(UUID.randomUUID(), "Federico Parezzan", "Pepperoni", "IN_PROGRESS", null, null);
         PizzaOrder pizzaOrder = new PizzaOrder();
         pizzaOrder.setId(request.getId());
 
@@ -98,7 +99,7 @@ class OrderServiceTest {
         UpdateOrderResponse response = orderService.updateOrder(request);
 
         assertThat(response).isNotNull();
-        assertThat(response.getCustomerName()).isEqualTo("John Doe");
+        assertThat(response.getCustomerName()).isEqualTo("Federico Parezzan");
         verify(orderRepository, times(1)).findById(request.getId());
         verify(orderRepository, times(1)).save(any(PizzaOrder.class));
     }
@@ -134,28 +135,28 @@ class OrderServiceTest {
     @Test
     void getAllOrders_shouldReturnListOfOrders() {
         PizzaOrder pizzaOrder = new PizzaOrder();
-        pizzaOrder.setCustomerName("John Doe");
+        pizzaOrder.setCustomerName("Federico Parezzan");
 
         when(orderRepository.findAll(any(Sort.class))).thenReturn(List.of(pizzaOrder));
 
         List<FullOrderResponse> responses = orderService.getAllOrders(Optional.empty(), true);
 
         assertThat(responses).isNotEmpty();
-        assertThat(responses.get(0).getCustomerName()).isEqualTo("John Doe");
+        assertThat(responses.get(0).getCustomerName()).isEqualTo("Federico Parezzan");
         verify(orderRepository, times(1)).findAll(any(Sort.class));
     }
 
     @Test
     void getAllOrders_shouldReturnFilteredOrdersByCustomerName() {
         PizzaOrder pizzaOrder = new PizzaOrder();
-        pizzaOrder.setCustomerName("John Doe");
+        pizzaOrder.setCustomerName("Federico Parezzan");
 
         when(orderRepository.findAllByCustomerName(anyString(), any(Sort.class))).thenReturn(List.of(pizzaOrder));
 
-        List<FullOrderResponse> responses = orderService.getAllOrders(Optional.of("John Doe"), true);
+        List<FullOrderResponse> responses = orderService.getAllOrders(Optional.of("Federico Parezzan"), true);
 
         assertThat(responses).isNotEmpty();
-        assertThat(responses.get(0).getCustomerName()).isEqualTo("John Doe");
+        assertThat(responses.get(0).getCustomerName()).isEqualTo("Federico Parezzan");
         verify(orderRepository, times(1)).findAllByCustomerName(anyString(), any(Sort.class));
     }
 
@@ -168,4 +169,58 @@ class OrderServiceTest {
         assertThat(responses).isEmpty();
         verify(orderRepository, times(1)).findAll(any(Sort.class));
     }
+
+    @Test
+    void updateOrderStatus_completedOrder_throwsIllegalArgumentException() {
+        UUID orderId = UUID.randomUUID();
+        PizzaOrder pizzaOrder = new PizzaOrder();
+        pizzaOrder.setId(orderId);
+        pizzaOrder.setStatus(PizzaOrderStatusEnum.COMPLETED.getValue());
+
+        when(orderRepository.findById(orderId)).thenReturn(Optional.of(pizzaOrder));
+
+        assertThatThrownBy(() -> orderService.updateOrderStatus(orderId.toString()))
+                .isInstanceOf(IllegalArgumentException.class)
+                .hasMessage("PizzaOrderStatusEnum already completed");
+    }
+
+
+    @Test
+    void getAllOrders_withSorting_respectsSortingOrder() {
+        PizzaOrder order1 = new PizzaOrder();
+        order1.setCustomerName("Federico");
+        order1.setUpdatedAt(LocalDateTime.now().minusDays(1));
+
+        PizzaOrder order2 = new PizzaOrder();
+        order2.setCustomerName("Federico");
+        order2.setUpdatedAt(LocalDateTime.now());
+
+        when(orderRepository.findAllByCustomerName(eq("Federico"), any(Sort.class)))
+                .thenReturn(Arrays.asList(order2, order1)); // Descending order
+
+        List<FullOrderResponse> responses = orderService.getAllOrders(Optional.of("Federico"), false);
+
+        assertThat(responses).hasSize(2);
+        assertThat(responses.get(0).getUpdatedAt()).isAfter(responses.get(1).getUpdatedAt());
+    }
+
+    @Test
+    void createOrder_setsCorrectInitialStatus() {
+        SaveOrderRequest request = new SaveOrderRequest("Federico", "Margherita");
+        PizzaOrder savedOrder = new PizzaOrder();
+        savedOrder.setId(UUID.randomUUID());
+        savedOrder.setCustomerName("Federico");
+        savedOrder.setPizzaType("Margherita");
+        savedOrder.setStatus(PizzaOrderStatusEnum.PENDING.getValue());
+
+        when(orderRepository.save(any(PizzaOrder.class))).thenReturn(savedOrder);
+
+        SaveOrderResponse response = orderService.createOrder(request);
+
+        assertThat(response.getStatus()).isEqualTo(PizzaOrderStatusEnum.PENDING.getValue());
+        verify(orderRepository).save(argThat(order ->
+                PizzaOrderStatusEnum.PENDING.getValue().equals(order.getStatus())
+        ));
+    }
+
 }

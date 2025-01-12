@@ -1,4 +1,4 @@
-package com.parezzan.awesome_pizza.aspects;
+package com.parezzan.awesome_pizza.aspects.log;
 
 import org.aspectj.lang.JoinPoint;
 import org.aspectj.lang.annotation.*;
@@ -12,7 +12,7 @@ public class LoggingAspect {
 
     private final Logger logger = LoggerFactory.getLogger(LoggingAspect.class);
 
-    @Pointcut("@annotation(com.parezzan.awesome_pizza.aspects.Loggable)")
+    @Pointcut("@annotation(com.parezzan.awesome_pizza.aspects.log.Loggable)")
     public void loggableMethods() {}
 
     @Before("loggableMethods()")
@@ -31,7 +31,6 @@ public class LoggingAspect {
             message.setLength(message.length() - 2);
         }
 
-        // Log message
         logger.info(message.toString());
     }
 

@@ -20,56 +20,15 @@ import java.util.UUID;
 import com.parezzan.awesome_pizza.aspects.log.Loggable;
 
 
-@Service
-public class OrderService {
-    private final OrderRepository orderRepository;
+public interface IOrderService {
 
-    public OrderService(OrderRepository orderRepository) {
-        this.orderRepository = orderRepository;
-    }
+    SaveOrderResponse createOrder(SaveOrderRequest request);
 
-    @Loggable
-    public SaveOrderResponse createOrder(SaveOrderRequest request) {
-        PizzaOrder pizzaOrder = PizzaOrderMapper.saveOrderRequestToPizzaOrder(request);
-        PizzaOrder pizzaOrderSaved = orderRepository.save(pizzaOrder);
-        return PizzaOrderMapper.pizzaOrderToSaveOrderResponse(pizzaOrderSaved);
-    }
+    UpdateOrderResponse updateOrderStatus(String orderId);
 
-    @Loggable
-    public UpdateOrderResponse updateOrderStatus(String orderId) {
-        PizzaOrder pizzaOrder = orderRepository.findById(UUID.fromString(orderId)).orElseThrow(() -> new IllegalArgumentException("Order not found"));
+    UpdateOrderResponse updateOrder(UpdateOrderRequest request);
 
-        pizzaOrder.setStatus(PizzaOrderStatusEnum.next(pizzaOrder.getStatus()).getValue());
-        PizzaOrder pizzaOrderUpdated =  orderRepository.save(pizzaOrder);
-        return PizzaOrderMapper.pizzaOrderToUpdateOrderResponse(pizzaOrderUpdated);
-    }
+    Boolean deleteOrder(String orderId);
 
-    @Loggable
-    public UpdateOrderResponse updateOrder(UpdateOrderRequest request) {
-        PizzaOrder pizzaOrder = orderRepository.findById(request.getId()).orElseThrow(() -> new IllegalArgumentException("Order not found"));
-        BeanUtils.copyProperties(request, pizzaOrder);
-        PizzaOrder pizzaOrderUpdated =  orderRepository.save(pizzaOrder);
-        return PizzaOrderMapper.pizzaOrderToUpdateOrderResponse(pizzaOrderUpdated);
-    }
-
-    @Loggable
-    public Boolean deleteOrder(String orderId) {
-        PizzaOrder pizzaOrder = orderRepository.findById(UUID.fromString(orderId)).orElseThrow(() -> new IllegalArgumentException("Order not found"));
-        orderRepository.delete(pizzaOrder);
-        return Boolean.TRUE;
-    }
-
-
-    @Loggable
-    public List<FullOrderResponse> getAllOrders(Optional<String> customerName, boolean orderAsc) {
-        List<PizzaOrder> pizzaOrders;
-        Sort sorting = Sort.by(orderAsc ? Sort.Direction.ASC : Sort.Direction.DESC, "updatedAt");
-        if(customerName.isEmpty() || customerName.get().isEmpty()) {
-            pizzaOrders = orderRepository.findAll(sorting);
-        } else {
-            pizzaOrders = orderRepository.findAllByCustomerName(customerName.get(), sorting);
-        }
-        return PizzaOrderMapper.pizzaOrderToFullOrderResponse(pizzaOrders);
-    }
-
+    List<FullOrderResponse> getAllOrders(Optional<String> customerName, boolean orderAsc);
 }
