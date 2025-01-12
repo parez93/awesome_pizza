@@ -1,6 +1,7 @@
 # Awesome Pizza API
 
-[<img src="awesome-pizza.png">]([https://docs.microsoft.com/en-us/windows/console/setconsolemode](https://unsplash.com/it/foto/pizza-ai-frutti-di-bosco-MQUqbmszGGM))
+[<img src="awesome-pizza.png">](https://unsplash.com/it/foto/pizza-ai-frutti-di-bosco-MQUqbmszGGM)
+
 
 ## Project Description
 "Awesome Pizza" is a Spring Boot API that enables customers to place orders for pizzas without registration. The pizzaiolo (pizza maker) can view the pizza Order queue nd process them one at a time.
